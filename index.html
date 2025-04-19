@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Baby Land</title>
+    <title>Baby Land - Order</title>
     <style>
         /* General Styles */
         body {
@@ -14,37 +14,12 @@
             background: linear-gradient(135deg, #ff9ce6, #92b2f7);
             color: #333;
         }
-        section {
-            display: none;
-        }
-        #home {
-            display: block;
-        }
 
-        /* Navigation */
-        nav a {
-            margin: 10px;
-            padding: 10px 20px;
-            font-size: 1.2rem;
-            text-decoration: none;
-            color: white;
-            background: linear-gradient(to right, #ff758c, #ff7eb3);
-            border-radius: 5px;
-            transition: transform 0.3s, background 0.3s;
-        }
-        nav a:hover {
-            transform: scale(1.1);
-            background: linear-gradient(to right, #ff6070, #ff85aa);
-        }
-
-        /* Home Section */
-        .home-photo {
-            width: 90%;
-            height: auto;
-            margin: 20px auto;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            animation: fadeIn 2s ease;
+        /* Title Styling */
+        h1 {
+            font-size: 2.5rem;
+            margin-top: 20px;
+            animation: fadeIn 1s ease-in-out;
         }
 
         /* Table */
@@ -85,12 +60,8 @@
 
         /* Responsive Design */
         @media (max-width: 600px) {
-            h1, h2 {
-                font-size: 1.5rem;
-            }
-            nav a {
-                font-size: 1rem;
-                padding: 8px;
+            h1 {
+                font-size: 2rem;
             }
             th, td {
                 font-size: 0.9rem;
@@ -113,21 +84,10 @@
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav>
-        <a href="#home" onclick="showSection('home')">Home</a>
-        <a href="#order" onclick="showSection('order')">Order</a>
-    </nav>
 
-    <!-- Home Page -->
-    <section id="home">
-        <h1>Welcome to Baby Land!</h1>
-        <p>Experience effortless shopping for all your baby needs.</p>
-        <img src="<img src="https://raw.githubusercontent.com/mini-me99/orders-day2/fcb4ad3da345453deac13ff5cbe670f969e54ef3/product1.jpg" alt="Product 1" width="300">" alt="Home Photo" class="home-photo">
-    </section>
-
-    <!-- Order Page -->
+    <!-- Order Page (Default Opening Page) -->
     <section id="order">
+        <h1>Baby Land</h1>  <!-- Added Title Here -->
         <h2>Place Your Order</h2>
         <table id="order-table">
             <thead>
@@ -148,7 +108,7 @@
     </section>
 
     <!-- Checkout Section -->
-    <section id="checkout">
+    <section id="checkout" style="display: none;">
         <h2>Checkout</h2>
         <div id="order-summary"></div>
         <form id="checkout-form">
@@ -176,20 +136,13 @@
     </section>
 
     <!-- Thank You Section -->
-    <section id="thank-you">
-        <h1>Thank You for Your Order!</h1>
+    <section id="thank-you" style="display: none;">
+        <h2>Thank You for Your Order!</h2>
         <p>Your order has been successfully submitted.</p>
         <button class="button" onclick="startNewOrder()">New Order</button>
     </section>
 
     <script>
-        function showSection(sectionId) {
-            document.querySelectorAll('section').forEach(section => {
-                section.style.display = 'none';
-            });
-            document.getElementById(sectionId).style.display = 'block';
-        }
-
         function addRow() {
             const table = document.getElementById('order-table').getElementsByTagName('tbody')[0];
             const newRow = table.insertRow();
@@ -214,26 +167,24 @@
             summaryHtml += "</tbody></table>";
             document.getElementById('order-summary').innerHTML = summaryHtml;
 
-            showSection('checkout');
+            document.getElementById('order').style.display = "none";
+            document.getElementById('checkout').style.display = "block";
         }
 
-                function submitOrder() {
+        function submitOrder() {
             const url = "https://script.google.com/macros/s/AKfycbxEjJrLIwlJhvQ6wRHBo_e0B9jBYVrc8-IjlNG1cEzm0rGRHl7afIVs1lNmS_yRQ4GN/exec";
             const form = document.getElementById('checkout-form');
 
-            // Collect form data
             const formData = new FormData(form);
             const table = document.getElementById('order-table').getElementsByTagName('tbody')[0];
             const rows = Array.from(table.rows);
 
-            // Gather dynamic order details into a JSON object
             const orderDetails = rows.map(row => ({
                 code: row.cells[0].getElementsByTagName('input')[0].value,
                 quantity: row.cells[1].getElementsByTagName('input')[0].value
             }));
-            formData.set("orderDetails", JSON.stringify(orderDetails)); // Convert orderDetails to JSON
+            formData.set("orderDetails", JSON.stringify(orderDetails));
 
-            // Send data to Google Apps Script
             fetch(url, {
                 method: 'POST',
                 body: formData
@@ -241,28 +192,21 @@
             .then(response => response.json())
             .then(data => {
                 if (data.result === "success") {
-                    alert("Order submitted successfully!");
-                    showSection('thank-you');
+                    document.getElementById('checkout').style.display = "none";
+                    document.getElementById('thank-you').style.display = "block";
                 } else {
                     alert("Failed to submit order: " + data.message);
                 }
             })
             .catch(error => {
                 alert("Failed to submit order. Please try again.");
-                console.error(error);
             });
         }
 
         function startNewOrder() {
-            // Reset the table and form for a new order
-            document.getElementById('order-table').getElementsByTagName('tbody')[0].innerHTML = `
-                <tr>
-                    <td><input type="text" name="code"></td>
-                    <td><input type="number" name="quantity"></td>
-                </tr>
-            `;
+            document.getElementById('order').style.display = "block";
+            document.getElementById('thank-you').style.display = "none";
             document.getElementById('checkout-form').reset();
-            showSection('order');
         }
     </script>
 </body>
