@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baby Land</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #ff9ce6, #92b2f7);
+            color: #333;
+        }
+        section {
+            display: none;
+        }
+        #home {
+            display: block;
+        }
+
+        /* Navigation */
+        nav a {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 1.2rem;
+            text-decoration: none;
+            color: white;
+            background: linear-gradient(to right, #ff758c, #ff7eb3);
+            border-radius: 5px;
+            transition: transform 0.3s, background 0.3s;
+        }
+        nav a:hover {
+            transform: scale(1.1);
+            background: linear-gradient(to right, #ff6070, #ff85aa);
+        }
+
+        /* Home Section */
+        .home-photo {
+            width: 90%;
+            height: auto;
+            margin: 20px auto;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 2s ease;
+        }
+
+        /* Table */
+        table {
+            width: 90%;
+            margin: 10px auto;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            font-size: 1rem;
+        }
+        th {
+            background: #ffc3f1;
+        }
+        td input {
+            width: 100%;
+            padding: 5px;
+        }
+
+        /* Buttons */
+        .button {
+            margin: 10px;
+            padding: 10px 15px;
+            font-size: 1rem;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            h1, h2 {
+                font-size: 1.5rem;
+            }
+            nav a {
+                font-size: 1rem;
+                padding: 8px;
+            }
+            th, td {
+                font-size: 0.9rem;
+            }
+            .button {
+                font-size: 0.9rem;
+                padding: 8px 12px;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <a href="#home" onclick="showSection('home')">Home</a>
+        <a href="#order" onclick="showSection('order')">Order</a>
+    </nav>
+
+    <!-- Home Page -->
+    <section id="home">
+        <h1>Welcome to Baby Land!</h1>
+        <p>Experience effortless shopping for all your baby needs.</p>
+        <img src="C:\Users\11\Desktop\code\WhatsApp Image 2025-04-19 at 07.42.29_543dad91.jpg" alt="Home Photo" class="home-photo">
+    </section>
+
+    <!-- Order Page -->
+    <section id="order">
+        <h2>Place Your Order</h2>
+        <table id="order-table">
+            <thead>
+                <tr>
+                    <th>Code</th>
+                    <th>Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input type="text" name="code"></td>
+                    <td><input type="number" name="quantity"></td>
+                </tr>
+            </tbody>
+        </table>
+        <button class="button" onclick="addRow()">Add More</button>
+        <button class="button" onclick="goToCheckout()">Checkout</button>
+    </section>
+
+    <!-- Checkout Section -->
+    <section id="checkout">
+        <h2>Checkout</h2>
+        <div id="order-summary"></div>
+        <form id="checkout-form">
+            <label>
+                Name: <input type="text" name="name" required>
+            </label><br>
+            <label>
+                Phone: <input type="tel" name="phone" required>
+            </label><br>
+            <label>
+                Location: <input type="text" name="location" required>
+            </label><br>
+            <label>
+                Store Name: <input type="text" name="storeName" required>
+            </label><br>
+            <label>
+                Deposit: <input type="number" name="deposit" required>
+            </label><br>
+            <label>
+                Message: <textarea name="message"></textarea>
+            </label><br>
+            <input type="hidden" name="orderDetails" id="orderDetails">
+            <button type="button" class="button" onclick="submitOrder()">Submit Order</button>
+        </form>
+    </section>
+
+    <!-- Thank You Section -->
+    <section id="thank-you">
+        <h1>Thank You for Your Order!</h1>
+        <p>Your order has been successfully submitted.</p>
+        <button class="button" onclick="startNewOrder()">New Order</button>
+    </section>
+
+    <script>
+        function showSection(sectionId) {
+            document.querySelectorAll('section').forEach(section => {
+                section.style.display = 'none';
+            });
+            document.getElementById(sectionId).style.display = 'block';
+        }
+
+        function addRow() {
+            const table = document.getElementById('order-table').getElementsByTagName('tbody')[0];
+            const newRow = table.insertRow();
+            newRow.innerHTML = `
+                <td><input type="text" name="code"></td>
+                <td><input type="number" name="quantity"></td>
+            `;
+        }
+
+        function goToCheckout() {
+            const table = document.getElementById('order-table');
+            const rows = Array.from(table.getElementsByTagName('tbody')[0].rows);
+            const orderDetails = rows.map(row => ({
+                code: row.cells[0].getElementsByTagName('input')[0].value,
+                quantity: row.cells[1].getElementsByTagName('input')[0].value
+            }));
+
+            let summaryHtml = "<table><thead><tr><th>Code</th><th>Quantity</th></tr></thead><tbody>";
+            orderDetails.forEach(order => {
+                summaryHtml += `<tr><td>${order.code}</td><td>${order.quantity}</td></tr>`;
+            });
+            summaryHtml += "</tbody></table>";
+            document.getElementById('order-summary').innerHTML = summaryHtml;
+
+            showSection('checkout');
+        }
+
+                function submitOrder() {
+            const url = "https://script.google.com/macros/s/AKfycbxEjJrLIwlJhvQ6wRHBo_e0B9jBYVrc8-IjlNG1cEzm0rGRHl7afIVs1lNmS_yRQ4GN/exec";
+            const form = document.getElementById('checkout-form');
+
+            // Collect form data
+            const formData = new FormData(form);
+            const table = document.getElementById('order-table').getElementsByTagName('tbody')[0];
+            const rows = Array.from(table.rows);
+
+            // Gather dynamic order details into a JSON object
+            const orderDetails = rows.map(row => ({
+                code: row.cells[0].getElementsByTagName('input')[0].value,
+                quantity: row.cells[1].getElementsByTagName('input')[0].value
+            }));
+            formData.set("orderDetails", JSON.stringify(orderDetails)); // Convert orderDetails to JSON
+
+            // Send data to Google Apps Script
+            fetch(url, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.result === "success") {
+                    alert("Order submitted successfully!");
+                    showSection('thank-you');
+                } else {
+                    alert("Failed to submit order: " + data.message);
+                }
+            })
+            .catch(error => {
+                alert("Failed to submit order. Please try again.");
+                console.error(error);
+            });
+        }
+
+        function startNewOrder() {
+            // Reset the table and form for a new order
+            document.getElementById('order-table').getElementsByTagName('tbody')[0].innerHTML = `
+                <tr>
+                    <td><input type="text" name="code"></td>
+                    <td><input type="number" name="quantity"></td>
+                </tr>
+            `;
+            document.getElementById('checkout-form').reset();
+            showSection('order');
+        }
+    </script>
+</body>
+</html>
