@@ -113,22 +113,22 @@
         <div id="order-summary"></div>
         <form id="checkout-form">
             <label>
-                الاسم: <input type="text" name="الاسم" required>
+                الاسم: <input type="text" name="name" required>
             </label><br>
             <label>
-                رقم تليفون: <input type="tel" name="رقم تليفون" required>
+                رقم تليفون: <input type="tel" name="phone" required>
             </label><br>
             <label>
-                العنوان: <input type="text" name="عنوان" required>
+                العنوان: <input type="text" name="location" required>
             </label><br>
             <label>
-                اسم المحل: <input type="text" name="اسم المحل" required>
+                اسم المحل: <input type="text" name="storename" required>
             </label><br>
             <label>
-                عربون: <input type="number" name="عربون" required>
+                عربون: <input type="number" name="deposit" required>
             </label><br>
             <label>
-                اكتب المزيد: <textarea name="اكتب المزيد"></textarea>
+                اكتب المزيد: <textarea name="message"></textarea>
             </label><br>
             <input type="hidden" name="orderDetails" id="orderDetails">
             <button type="button" class="button" onclick="submitOrder()">Submit Order</button>
@@ -174,19 +174,10 @@
             document.getElementById('checkout').style.display = "block";
         }
 
-        function submitOrder() {
-            const url = "https://script.google.com/macros/s/AKfycbxxOTZaUrpHHcDXKidrjnX3vjzXwLUfoWjhgVQPTPie263_1MLbI_qZLtLWAwdPzeqTpA/exec";
+               function submitOrder() {
+            const url = "https://script.google.com/macros/s/AKfycbwyfjqdBD7uOdMUV-KiJzUJIWLBq5vVVWskz3aTenGLyC0yk3ADM5OfypuYI7wXe2Ry/exec"; // Replace with the deployed Apps Script URL
             const form = document.getElementById('checkout-form');
-
             const formData = new FormData(form);
-            const table = document.getElementById('order-table').getElementsByTagName('tbody')[0];
-            const rows = Array.from(table.rows);
-
-            const orderDetails = rows.map(row => ({
-                code: row.cells[0].getElementsByTagName('input')[0].value,
-                quantity: row.cells[1].getElementsByTagName('input')[0].value
-            }));
-            formData.set("orderDetails", JSON.stringify(orderDetails));
 
             fetch(url, {
                 method: 'POST',
@@ -211,6 +202,7 @@
             document.getElementById('thank-you').style.display = "none";
             document.getElementById('checkout-form').reset();
         }
+
     </script>
 </body>
 </html>
